@@ -23,10 +23,18 @@ class BlurSuite extends FunSuite {
   test("boxBlurKernel should return the correct value on an interior pixel " +
     "of a 3x4 image with radius 1") {
     val src = new Img(3, 4)
-    src(0, 0) = 0; src(1, 0) = 1; src(2, 0) = 2
-    src(0, 1) = 3; src(1, 1) = 4; src(2, 1) = 5
-    src(0, 2) = 6; src(1, 2) = 7; src(2, 2) = 8
-    src(0, 3) = 50; src(1, 3) = 11; src(2, 3) = 16
+    src(0, 0) = 0;
+    src(1, 0) = 1;
+    src(2, 0) = 2
+    src(0, 1) = 3;
+    src(1, 1) = 4;
+    src(2, 1) = 5
+    src(0, 2) = 6;
+    src(1, 2) = 7;
+    src(2, 2) = 8
+    src(0, 3) = 50;
+    src(1, 3) = 11;
+    src(2, 3) = 16
 
     assert(boxBlurKernel(src, 1, 2, 1) === 12,
       s"(boxBlurKernel(1, 2, 1) should be 12, " +
@@ -38,9 +46,15 @@ class BlurSuite extends FunSuite {
     val h = 3
     val src = new Img(w, h)
     val dst = new Img(w, h)
-    src(0, 0) = 0; src(1, 0) = 1; src(2, 0) = 2
-    src(0, 1) = 3; src(1, 1) = 4; src(2, 1) = 5
-    src(0, 2) = 6; src(1, 2) = 7; src(2, 2) = 8
+    src(0, 0) = 0;
+    src(1, 0) = 1;
+    src(2, 0) = 2
+    src(0, 1) = 3;
+    src(1, 1) = 4;
+    src(2, 1) = 5
+    src(0, 2) = 6;
+    src(1, 2) = 7;
+    src(2, 2) = 8
 
     HorizontalBoxBlur.blur(src, dst, 0, 2, 1)
 
@@ -65,9 +79,18 @@ class BlurSuite extends FunSuite {
     val h = 3
     val src = new Img(w, h)
     val dst = new Img(w, h)
-    src(0, 0) = 0; src(1, 0) = 1; src(2, 0) = 2; src(3, 0) = 9
-    src(0, 1) = 3; src(1, 1) = 4; src(2, 1) = 5; src(3, 1) = 10
-    src(0, 2) = 6; src(1, 2) = 7; src(2, 2) = 8; src(3, 2) = 11
+    src(0, 0) = 0;
+    src(1, 0) = 1;
+    src(2, 0) = 2;
+    src(3, 0) = 9
+    src(0, 1) = 3;
+    src(1, 1) = 4;
+    src(2, 1) = 5;
+    src(3, 1) = 10
+    src(0, 2) = 6;
+    src(1, 2) = 7;
+    src(2, 2) = 8;
+    src(3, 2) = 11
 
     VerticalBoxBlur.blur(src, dst, 0, 4, 2)
 
@@ -89,5 +112,16 @@ class BlurSuite extends FunSuite {
     check(3, 2, 6)
   }
 
+  test("Pairs by 2 should match") {
+    assert(VerticalBoxBlur.pairs(0 to 10 by 2)
+      === Vector((0, 2), (2, 4), (4, 6), (6, 8), (8, 10)),
+    "Pairs not matching")
+  }
 
+  test("Pairs by 3 should match") {
+    assert(VerticalBoxBlur.pairs(0 to 10 by 3)
+      === Vector((0, 3), (3, 6), (6, 9)),
+      "Pairs not matching")
+
+  }
 }
