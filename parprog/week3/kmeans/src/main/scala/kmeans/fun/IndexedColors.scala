@@ -33,10 +33,10 @@ class IndexedColorFilter(initialImage: Img,
   def getResult() = indexedImage(initialImage, newMeans)
 
   private def imageToPoints(img: Img): GenSeq[Point] =
-    for (x <- 0 until img.width; y <- 0 until img.height) yield {
+    (for (x <- (0 until img.width).par; y <- (0 until img.height).par) yield {
       val rgba = img(x, y)
       new Point(red(rgba), green(rgba), blue(rgba))
-    }
+    }).par
 
   private def indexedImage(img: Img, means: GenSeq[Point]) = {
     val dst = new Img(img.width, img.height)
@@ -54,11 +54,11 @@ class IndexedColorFilter(initialImage: Img,
   }
 
   private def initializeIndex(numColors: Int, points: GenSeq[Point]): GenSeq[Point] = {
-    val initialPoints: GenSeq[Point] =
+    val initialPoints: GenSeq[Point] = {
       initStrategy match {
         case RandomSampling =>
           val d: Int = points.size / numColors
-          (0 until numColors) map (idx => points(d * idx))
+          (0 until numColors).par map (idx => points(d * idx))
         case UniformSampling =>
           val sep: Int = 32
           (for (r <- 0 until 255 by sep; g <- 0 until 255 by sep; b <- 0 until 255 by sep) yield {
@@ -74,18 +74,19 @@ class IndexedColorFilter(initialImage: Img,
             val cnt = pts.size * 3 * numColors / points.size
             if (cnt >= 1) {
               val d = pts.size / cnt
-              (0 until cnt) map (idx => pts(d * idx))
+              (0 until cnt).par map (idx => pts(d * idx))
             } else
               Seq()
           }).flatten
         case UniformChoice =>
           val d: Int = math.max(1, (256 / math.cbrt(numColors.toDouble).ceil).toInt)
-          for (r <- 0 until 256 by d; g <- 0 until 256 by d; b <- 0 until 256 by d) yield
-            new Point(r.toDouble / 256,g.toDouble / 256, b.toDouble / 256)
+          for (r <- (0 until 256 by d).par; g <- (0 until 256 by d).par; b <- (0 until 256 by d).par) yield
+            new Point(r.toDouble / 256, g.toDouble / 256, b.toDouble / 256)
       }
+    }.par
 
     val d2 = initialPoints.size.toDouble / numColors
-    (0 until numColors) map (idx => initialPoints((idx * d2).toInt))
+    (0 until numColors).par map (idx => initialPoints((idx * d2).toInt))
   }
 
   private def computeSNR(points: GenSeq[Point], means: GenSeq[Point]): Double = {
