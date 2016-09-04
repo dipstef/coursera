@@ -5,12 +5,12 @@ import scala.reflect.ClassTag
 import org.scalameter._
 
 class ConcBuffer[@specialized(Byte, Char, Int, Long, Float, Double) T: ClassTag](
-                                                                                  val k: Int, private var conc: Conc[T]
-                                                                                ) extends Traversable[T] {
+  val k: Int, private var conc: Conc[T]
+) extends Traversable[T] {
   require(k > 0)
 
   def this() = this(128, Conc.Empty)
-
+  
   private var chunk: Array[T] = new Array(k)
   private var lastSize: Int = 0
 
@@ -67,7 +67,7 @@ object ConcBufferRunner {
     Key.exec.maxWarmupRuns -> 40,
     Key.exec.benchRuns -> 60,
     Key.verbose -> true
-  ) withWarmer (new Warmer.Default)
+  ) withWarmer(new Warmer.Default)
 
   def main(args: Array[String]) {
     val size = 1000000
