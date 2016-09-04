@@ -20,7 +20,7 @@ class SimulationCanvas(val model: SimulationModel) extends JComponent {
 
     // clear canvas pixels
     for (x <- 0 until MAX_RES; y <- 0 until MAX_RES) pixels(y * width + x) = 0
-
+    
     // count number of bodies in each pixel
     for (b <- model.bodies) {
       val px = ((b.x - model.screen.minX) / model.screen.width * width).toInt
@@ -78,11 +78,11 @@ class SimulationCanvas(val model: SimulationModel) extends JComponent {
             drawQuad(depth + 1, sw)
             drawQuad(depth + 1, se)
           case Empty(_, _, _) | Leaf(_, _, _, _) =>
-          // done
+            // done
         }
       }
       drawQuad(0, model.quad)
-
+      
     }
     gcan.drawImage(img, 0, 0, null)
   }

@@ -30,14 +30,14 @@ object BarnesHut {
     rightpanel.setBorder(BorderFactory.createEtchedBorder(border.EtchedBorder.LOWERED))
     rightpanel.setLayout(new BorderLayout)
     add(rightpanel, BorderLayout.EAST)
-
+    
     val controls = new JPanel
     controls.setLayout(new GridLayout(0, 2))
     rightpanel.add(controls, BorderLayout.NORTH)
-
+    
     val parallelismLabel = new JLabel("Parallelism")
     controls.add(parallelismLabel)
-
+    
     val items = (1 to Runtime.getRuntime.availableProcessors).map(_.toString).toArray
     val parcombo = new JComboBox[String](items)
     parcombo.setSelectedIndex(items.length - 1)
@@ -48,10 +48,10 @@ object BarnesHut {
       }
     })
     controls.add(parcombo)
-
+    
     val bodiesLabel = new JLabel("Total bodies")
     controls.add(bodiesLabel)
-
+    
     val bodiesSpinner = new JSpinner(new SpinnerNumberModel(25000, 32, 1000000, 1000))
     bodiesSpinner.addChangeListener(new ChangeListener {
       def stateChanged(e: ChangeEvent) = {
@@ -62,7 +62,7 @@ object BarnesHut {
       }
     })
     controls.add(bodiesSpinner)
-
+    
     val stepbutton = new JButton("Step")
     stepbutton.addActionListener(new ActionListener {
       def actionPerformed(e: ActionEvent) {
@@ -70,7 +70,7 @@ object BarnesHut {
       }
     })
     controls.add(stepbutton)
-
+    
     val startButton = new JToggleButton("Start/Pause")
     val startTimer = new javax.swing.Timer(0, new ActionListener {
       def actionPerformed(e: ActionEvent) {
@@ -84,7 +84,7 @@ object BarnesHut {
       }
     })
     controls.add(startButton)
-
+    
     val quadcheckbox = new JToggleButton("Show quad")
     quadcheckbox.addActionListener(new ActionListener {
       def actionPerformed(e: ActionEvent) {

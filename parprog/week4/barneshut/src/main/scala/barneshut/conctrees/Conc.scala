@@ -5,13 +5,9 @@ import scala.annotation.tailrec
 
 sealed trait Conc[@specialized(Int, Long, Float, Double) +T] {
   def level: Int
-
   def size: Int
-
   def left: Conc[T]
-
   def right: Conc[T]
-
   def normalized = this
 }
 
@@ -24,35 +20,29 @@ object Conc {
 
   sealed trait Leaf[T] extends Conc[T] {
     def left = sys.error("Leaves do not have children.")
-
     def right = sys.error("Leaves do not have children.")
   }
 
   case object Empty extends Leaf[Nothing] {
     def level = 0
-
     def size = 0
   }
 
   class Single[@specialized(Int, Long, Float, Double) T](val x: T) extends Leaf[T] {
     def level = 0
-
     def size = 1
-
     override def toString = s"Single($x)"
   }
 
   class Chunk[@specialized(Int, Long, Float, Double) T](val array: Array[T], val size: Int, val k: Int)
-    extends Leaf[T] {
+  extends Leaf[T] {
     def level = 0
-
     override def toString = s"Chunk(${array.mkString("", ", ", "")}; $size; $k)"
   }
 
   case class Append[+T](left: Conc[T], right: Conc[T]) extends Conc[T] {
     val level = 1 + math.max(left.level, right.level)
     val size = left.size + right.size
-
     override def normalized = {
       def wrap[T](xs: Conc[T], ys: Conc[T]): Conc[T] = (xs: @unchecked) match {
         case Append(ws, zs) => wrap(ws, zs <> ys)
@@ -112,13 +102,12 @@ object Conc {
     case Empty => ys
     case xs: Leaf[T] => new <>(xs, ys)
   }
-
   @tailrec private def append[T](xs: Append[T], ys: Conc[T]): Conc[T] = {
     if (xs.right.level > ys.level) new Append(xs, ys)
     else {
       val zs = new <>(xs.right, ys)
       xs.left match {
-        case ws@Append(_, _) => append(ws, zs)
+        case ws @ Append(_, _) => append(ws, zs)
         case ws if ws.level <= zs.level => ws <> zs
         case ws => new Append(ws, zs)
       }
